@@ -17,11 +17,13 @@
 5) Install OpenML python package 
    * github openml -> master branch, install:   
         
-```git clone https://github.com/openml/openml-python```   
+```git clone https://github.com/openml/openml-python```
+   
 ```cd openml-python```
+
 ```python setup.py install```
    
-     (https://github.com/openml/openml-python/blob/develop/examples/OpenMLDemo.ipynb)
+(https://github.com/openml/openml-python/blob/develop/examples/OpenMLDemo.ipynb)
 
 6) ```python search_parameter_space.py```
   
