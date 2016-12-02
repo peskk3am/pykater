@@ -15,7 +15,7 @@
 ```pip install deap```   
 
 5) Install OpenML python package 
-   * github openml -> master branch, install:   
+  * github openml -> master branch, install:   
         
 ```git clone https://github.com/openml/openml-python```
    
@@ -25,7 +25,13 @@
    
 (https://github.com/openml/openml-python/blob/develop/examples/OpenMLDemo.ipynb)
 
-6) ```python search_parameter_space.py```
+6) OpenML api-key
+  * create a file `openml_api_key.py` in the project's root directory
+containing a single line:
+
+```key = "your-openml-api-key"```       
+
+7) ```python search_parameter_space.py```
   
 ----
 Conda guide:
