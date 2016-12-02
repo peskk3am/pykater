@@ -4,24 +4,23 @@
 2) Create an environment
   * specify packages you want to install
         
-        ```conda create --name python-pikater python=3 numpy scipy scikit-learn pandas deap```
+```conda create --name python-pikater python=3 numpy scipy scikit-learn pandas deap```
 
 3) Activate the environment
         
-        ```activate python-pikater``` 
+```activate python-pikater``` 
 
 4) Install deap   
         
-        ```pip intall deap```   
+```pip intall deap```   
 
 5) Install OpenML python package 
    * github openml -> master branch, install:   
         
-         ```git clone https://github.com/openml/openml-python   
-                  
-            cd openml-python
-               
-            python setup.py install```
+```git clone https://github.com/openml/openml-python   
+cd openml-python
+python setup.py install
+```
    
      (https://github.com/openml/openml-python/blob/develop/examples/OpenMLDemo.ipynb)
 
