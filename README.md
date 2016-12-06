@@ -4,7 +4,7 @@
 2) Create an environment
   * specify packages you want to install:
         
-```conda create --name python-pikater python=3 numpy scipy scikit-learn pandas```
+```conda create --name python-pikater python=3 numpy scipy scikit-learn pandas matplotlib```
 
 3) Activate the environment
         

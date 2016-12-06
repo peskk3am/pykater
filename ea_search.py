@@ -1,4 +1,5 @@
 import random
+import os
 
 from deap import base
 from deap import creator
@@ -6,12 +7,14 @@ from deap import tools
 
 from methods import hyperparameters
 
+import sklearn.model_selection as model_selection
 
 class EvolutionSearchCV():
 
-    def __init__(self, estimator, hyperparameter_space):
+    def __init__(self, estimator, hyperparameter_space, dataset_name):        
         self.estimator = estimator
         self.hyperparameter_space = hyperparameter_space
+        self.dataset_name = dataset_name
         
         self.evolution_init(hyperparameter_space)
         
@@ -56,10 +59,10 @@ class EvolutionSearchCV():
         #
         # NPOP  us the number of individuals in the population
         
-        self.CXPB, self.MUTPB, self.NGEN = 0.5, 0.2, 5
-        self.NPOP = 10
+        self.CXPB, self.MUTPB, self.NGEN = 0.5, 0.2, 300
+        self.NPOP = 20
         
-        random.seed(64)  # TODO
+        #random.seed(64)  # TODO
         
         
         creator.create("FitnessMax", base.Fitness, weights=(1.0,))
@@ -136,12 +139,12 @@ class EvolutionSearchCV():
         return self.best_estimator.predict(X)
 
 
-    def fit(self, X_train, y_train, X_test=None, y_test=None):
+    def fit(self, X, y):
         
-        self.X_train, self.y_train  = X_train, y_train
-        if not X_test: self.X_test = X_train
-        if not y_test: self.y_test = y_train        
-        
+        # Split the dataset into testing and training data
+        self.X_train, self.X_test, self.y_train, self.y_test = \
+          model_selection.train_test_split(X, y, test_size=0.2, random_state=0)
+                        
         print("Start of evolution")
         
         # Evaluate the entire self.population
@@ -151,6 +154,14 @@ class EvolutionSearchCV():
                 
         
         print("  Evaluated %i individuals" % len(self.pop))
+        
+        
+        f = open("results"+os.sep
+                 +type(self.estimator).__name__+"_"+self.dataset_name+".res",
+                 "w")        
+
+        f.write("# Dataset: "+self.dataset_name+"\n"+
+                "# Estimator: "+type(self.estimator).__name__+"\n")
         
         # Begin the evolution
         for g in range(self.NGEN):
@@ -198,19 +209,36 @@ class EvolutionSearchCV():
             sum2 = sum(x*x for x in fits)
             std = abs(sum2 / length - mean**2)**0.5
             
-            print("  Min %s" % min(fits))
-            print("  Max %s" % max(fits))
-            print("  Avg %s" % mean)
-            print("  Std %s" % std)
+            #print("  Min %s" % min(fits))
+            #print("  Max %s" % max(fits))
+            #print("  Avg %s" % mean)
+            #print("  Std %s" % std)
+                    
+            f.write(str(min(fits))+","
+                +str(max(fits))+","
+                +str(mean)+","
+                +str(std)
+                +"\n")
+                
+            # End the evolution if optimal solution is found:
+            if max(fits) == 1:
+              break        
         
         print("-- End of (successful) evolution --")
         
         best_ind = tools.selBest(self.pop, 1)[0]
         print("Best individual is %s, %s" % (best_ind, best_ind.fitness.values))
-        
+                
         self.best_params_ = self.get_params(best_ind)       
-        self.best_estimator = self.estimator.set_params(**self.best_params_)         
+        self.best_estimator = self.estimator.set_params(**self.best_params_)
+
+        f.write("# Best individual: "+str(self.best_params_)+
+                ", fitness: "+str(best_ind.fitness.values))
+
+        f.close()
         
+                                         
+                                               
 
 '''
 # test

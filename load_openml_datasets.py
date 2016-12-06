@@ -23,7 +23,7 @@ def get_datasets(first_n=10):
         X, y, attribute_names = dataset.get_data(
                             target=dataset.default_target_attribute, 
                             return_attribute_names=True)
-        datasets_list.append((X,y))
+        datasets_list.append((X,y, d["name"]))
         
     return datasets_list
 
