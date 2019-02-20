@@ -21,9 +21,9 @@ def get_hyperparameter_search_space():
     dual = hs.add_hyperparameter(Constant("dual", "False"))
     # This is set ad-hoc
     tol = hs.add_hyperparameter(FloatHyperparameter(
-        "tol", 1e-5, 1e-1, default=1e-4, log=True))
+        "tol", 1e-5, 1e-1, default=1e-4))
     C = hs.add_hyperparameter(FloatHyperparameter(
-        "C", 0.03125, 32768, log=True, default=1.0))
+        "C", 0.03125, 32768, default=1.0))
     multi_class = hs.add_hyperparameter(Constant("multi_class", "ovr"))
     # These are set ad-hoc
     fit_intercept = hs.add_hyperparameter(Constant("fit_intercept", "True"))

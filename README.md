@@ -4,11 +4,11 @@
 2) Create an environment
   * specify packages you want to install:
         
-```conda create --name python-pikater python=3 numpy scipy scikit-learn pandas matplotlib```
+```conda create --name pykater python=3 numpy scipy scikit-learn pandas matplotlib```
 
 3) Activate the environment
         
-```activate python-pikater``` 
+```activate pykater``` 
 
 4) Install deap   
         
@@ -31,7 +31,7 @@ containing a single line:
 
 ```key = "your-openml-api-key"```       
 
-7) ```python search_parameter_space.py```
+7) ```python search_parameter_space.py ?```
   
 ----
 Conda guide:

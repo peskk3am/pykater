@@ -19,7 +19,7 @@ def get_hyperparameter_search_space():
         name="learning_rate", lower=0.01, upper=2, default=0.1))
     algorithm = hs.add_hyperparameter(CategoricalHyperparameter(
         name="algorithm", choices=["SAMME.R", "SAMME"], default="SAMME.R"))
-    max_depth = hs.add_hyperparameter(IntegerHyperparameter(
-        name="max_depth", lower=1, upper=10, default=1))
+    #max_depth = hs.add_hyperparameter(IntegerHyperparameter(
+    #    name="max_depth", lower=1, upper=10, default=1))
 
     return hs
