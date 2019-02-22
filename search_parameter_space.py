@@ -6,7 +6,7 @@ from sklearn.preprocessing import Imputer, normalize
 
 from methods import *
 
-import ea_search, grid_search
+import ea_search, grid_search, randomized_search
 import load_openml_datasets
 
 import sys
@@ -21,7 +21,8 @@ if verbose > 0:
 #----------
 # list of names of the modules containing methods (in 'methods' directory)
 search_list = ["grid_search_cv", "evolutionary_search_no_missing_values",
-               "evolutionary_search", "evolutionary_search_cv"]
+               "evolutionary_search", "evolutionary_search_cv",
+               "randomized_search_cv"]
 
 # grid_search_cv ... Use scikit-learn grid search                
 # evolutionary_search_no_missing_values ... Use deap evolutionary search         
@@ -29,7 +30,8 @@ search_list = ["grid_search_cv", "evolutionary_search_no_missing_values",
 #                         missing values
 # evolutionary_search_cv ... Use deap evolutionary search with replaced 
 #                            missing values and with cross validation        
-
+# randomized_search_cv ... Use scikit-learn randomized search 
+        
 
 #----------
 #  List of used data-mining methods
@@ -159,6 +161,17 @@ def evolutionary_search_cv(m, dataset_name, verbose=0):
                                 verbose=verbose))])                           
     return model
     
+def randomized_search_cv(m, dataset_name, verbose=0):
+        
+    """ Randomized search from scikit-learn    
+    """    
+    
+    model = randomized_search.RandomizedSearch(m.get_model_class()(),
+                                   m.get_hyperparameter_search_space(),
+                                   dataset_name, verbose=verbose)
+                                          
+    return model 
+
     
 #----------
 #  Main cycle: for each dataset go through all methods
