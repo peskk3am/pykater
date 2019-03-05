@@ -132,7 +132,7 @@ def evolutionary_search_no_missing_values(m, dataset_name, verbose=0):
     model = Pipeline([("imputer", Imputer(missing_values=0,
                                           strategy="mean",
                                           axis=0)),
-                      ('ea', ea_search.EvolutionSearch(
+                      ('ea', ea_search.EvolutionarySearch(
                                 m.get_model_class()(),
                                 m.get_hyperparameter_search_space(),
                                 dataset_name,
@@ -143,7 +143,7 @@ def evolutionary_search(m, dataset_name, verbose=0):
     model = Pipeline([("imputer", Imputer(missing_values=1,
                                           strategy="mean",
                                           axis=0)),
-                      ('ea', ea_search.EvolutionSearch(
+                      ('ea', ea_search.EvolutionarySearch(
                                 m.get_model_class()(),
                                 m.get_hyperparameter_search_space(),
                                 dataset_name,
@@ -154,7 +154,7 @@ def evolutionary_search_cv(m, dataset_name, verbose=0):
     model = Pipeline([("imputer", Imputer(missing_values=0,     # TODO jo????
                                           strategy="mean",
                                           axis=0)),
-                      ('ea', ea_search.EvolutionSearchCV(
+                      ('ea', ea_search.EvolutionarySearchCV(
                                 m.get_model_class()(),
                                 m.get_hyperparameter_search_space(),
                                 dataset_name,                                
