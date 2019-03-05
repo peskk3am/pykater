@@ -48,7 +48,7 @@ method_list = ["knn", "decision_tree", "gaussian_nb", "adaboost",
  
 if sys.argv[1] == "?":
     print()
-    print("Usage: search_parameter_space search method dataset")
+    print("Usage: search_parameter_space.py search method dataset")
     print()
     print("Parameter-space search algorithms:")
     i = 0
