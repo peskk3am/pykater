@@ -1,4 +1,5 @@
 import os
+import sklearn.model_selection as model_selection
 
 class Search():
     def get_results_file_name(self):
@@ -37,3 +38,15 @@ class Search():
             pass
 
         f.write("#\n")        
+
+    def split_dataset(self, X, y):
+        # Split the dataset into testing and training data
+        X_train, X_test, y_train, y_test = \
+          model_selection.train_test_split(X, y, test_size=0.2, random_state=0)
+        
+        # X_train = X
+        # X_test = X
+        # y_train = y
+        # y_test = y
+
+        return X_train, X_test, y_train, y_test 

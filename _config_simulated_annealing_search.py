@@ -1,0 +1,1 @@
+#----------# Simulated Annealing Parameters#----------n_iter = 200temperature = 1a = 0.9  # decrease of temperature (usually 0.8 to 0.99)L = 2   # number of cycles with the same temperature cv_folds = 10

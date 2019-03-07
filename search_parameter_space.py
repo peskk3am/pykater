@@ -6,12 +6,12 @@ from sklearn.preprocessing import Imputer, normalize
 
 from methods import *
 
-import ea_search, grid_search, randomized_search
+import ea_search, grid_search, randomized_search, simulated_annealing_search
 import load_openml_datasets
 
 import sys
 
-verbose = 3
+verbose = 2
 
 if verbose > 0:
     print("Verbose:", verbose, "\n")
@@ -22,7 +22,7 @@ if verbose > 0:
 # list of names of the modules containing methods (in 'methods' directory)
 search_list = ["grid_search_cv", "evolutionary_search_no_missing_values",
                "evolutionary_search", "evolutionary_search_cv",
-               "randomized_search_cv"]
+               "randomized_search_cv", "simulated_annealing_search_cv"]
 
 # grid_search_cv ... Use scikit-learn grid search                
 # evolutionary_search_no_missing_values ... Use deap evolutionary search         
@@ -171,6 +171,19 @@ def randomized_search_cv(m, dataset_name, verbose=0):
                                    dataset_name, verbose=verbose)
                                           
     return model 
+
+
+def simulated_annealing_search_cv(m, dataset_name, verbose=0):
+        
+    """ Simulated annealing search    
+    """    
+    
+    model = simulated_annealing_search.SimulatedAnnealingSearch(m.get_model_class()(),
+                                   m.get_hyperparameter_search_space(),
+                                   dataset_name, verbose=verbose)
+                                          
+    return model 
+
 
     
 #----------

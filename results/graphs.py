@@ -20,7 +20,7 @@ def parse_file_name(file_name):
 
 
 if sys.argv[1] == "?":
-    print("Usage: graphs.py res_file_name"))
+    print("Usage: python graphs.py res_file_name")
 else:
     # argv 1 is the .res file name
     file_name = sys.argv[1]
