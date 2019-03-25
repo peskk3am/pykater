@@ -30,6 +30,12 @@ class HyperparameterSpace:
     def add_hyperparameter(self, param):              
         self.add_grid_hyperparameter(param)
         self.hyperparameters += [param]
+    
+    def get_hyperparameter_by_name(self, name):
+        for h in self.hyperparameters:
+            if h.name == name:
+                return h
+        return None
             
 
 class NumericHyperparameter():
