@@ -29,9 +29,9 @@ def get_hyperparameter_search_space():
         Constant("min_weight_fraction_leaf", 0.))
     subsample = hs.add_hyperparameter(FloatHyperparameter(
             name="subsample", lower=0.01, upper=1.0, default=1.0))
-    max_features = hs.add_hyperparameter(FloatHyperparameter(
-        "max_features", 0.5, 5, default=1))
+    max_features = hs.add_hyperparameter(IntegerHyperparameter(
+        "max_features", 1, 10, default=1))
     max_leaf_nodes = hs.add_hyperparameter(Constant(
-        name="max_leaf_nodes", value="None"))
+        name="max_leaf_nodes", value=None))
       
     return hs

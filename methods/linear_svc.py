@@ -18,7 +18,7 @@ def get_hyperparameter_search_space():
         "penalty", ["l1", "l2"], default="l2"))
     loss = hs.add_hyperparameter(CategoricalHyperparameter(
         "loss", ["hinge", "squared_hinge"], default="squared_hinge"))
-    dual = hs.add_hyperparameter(Constant("dual", "False"))
+    dual = hs.add_hyperparameter(Constant("dual", False))
     # This is set ad-hoc
     tol = hs.add_hyperparameter(FloatHyperparameter(
         "tol", 1e-5, 1e-1, default=1e-4))
@@ -26,7 +26,7 @@ def get_hyperparameter_search_space():
         "C", 0.03125, 32768, default=1.0))
     multi_class = hs.add_hyperparameter(Constant("multi_class", "ovr"))
     # These are set ad-hoc
-    fit_intercept = hs.add_hyperparameter(Constant("fit_intercept", "True"))
+    fit_intercept = hs.add_hyperparameter(Constant("fit_intercept", True))
     intercept_scaling = hs.add_hyperparameter(Constant(
         "intercept_scaling", 1))
 

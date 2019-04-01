@@ -25,10 +25,10 @@ def get_hyperparameter_search_space():
         "l1_ratio", 1e-9, 1, default=0.15))
     #fit_intercept = cs.add_hyperparameter(UnParametrizedHyperparameter(
     #    "fit_intercept", "True"))
-    fit_intercept = hs.add_hyperparameter(Constant("fit_intercept", "True"))
+    fit_intercept = hs.add_hyperparameter(Constant("fit_intercept", True))
     
-    n_iter = hs.add_hyperparameter(IntegerHyperparameter(
-        "n_iter", 5, 1000, default=20))
+    max_iter = hs.add_hyperparameter(IntegerHyperparameter(
+        "max_iter", 5, 1000, default=20))
     epsilon = hs.add_hyperparameter(FloatHyperparameter(
         "epsilon", 1e-5, 1e-1, default=1e-4))
     learning_rate = hs.add_hyperparameter(CategoricalHyperparameter(
@@ -39,7 +39,7 @@ def get_hyperparameter_search_space():
     power_t = hs.add_hyperparameter(FloatHyperparameter(
         "power_t", 1e-5, 1, default=0.25))
     average = hs.add_hyperparameter(CategoricalHyperparameter(
-        "average", ["False", "True"], default="False"))
+        "average", [False, True], default=False))
 
 #    # TODO add passive/aggressive here, although not properly documented?
 #    elasticnet = EqualsCondition(l1_ratio, penalty, "elasticnet")

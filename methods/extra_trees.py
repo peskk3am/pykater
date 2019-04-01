@@ -20,7 +20,7 @@ def get_hyperparameter_search_space():
     max_features = hs.add_hyperparameter(FloatHyperparameter(
         "max_features", 0.5, 5, default=1))
 
-    max_depth = hs.add_hyperparameter(Constant(name="max_depth", value="None"))
+    max_depth = hs.add_hyperparameter(Constant(name="max_depth", value=None))
 
     min_samples_split = hs.add_hyperparameter(IntegerHyperparameter(
         "min_samples_split", 2, 20, default=2))
@@ -30,6 +30,6 @@ def get_hyperparameter_search_space():
         'min_weight_fraction_leaf', 0.))
 
     bootstrap = hs.add_hyperparameter(CategoricalHyperparameter(
-        "bootstrap", ["True", "False"], default="False"))
+        "bootstrap", [True, False], default=False))
       
     return hs

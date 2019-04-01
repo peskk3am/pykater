@@ -1,3 +1,6 @@
+# not beeing used 
+# "needs a parameter ( MultinomialNB() )"
+
 from methods.hyperparameters import *
 from sklearn.multiclass import OneVsRestClassifier
 
@@ -7,7 +10,7 @@ def get_name():
 
 
 def get_model_class():
-    return OneVsRestClassifier
+    return OneVsRestClassifier  # needs a parameter ( MultinomialNB() )
 
 
 def get_hyperparameter_search_space():

@@ -16,6 +16,10 @@ def get_hyperparameter_search_space():
 
     reg_param = FloatHyperparameter('reg_param', 0.0, 10.0,
                                            default=0.5)
+    tol = FloatHyperparameter('tol', 0.0, 1.0,
+                                           default=1.0e-4)
+    
     hs.add_hyperparameter(reg_param)    
+    hs.add_hyperparameter(tol)    
 
     return hs

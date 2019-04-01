@@ -8,10 +8,11 @@ from methods import *
 
 import ea_search, grid_search, randomized_search, simulated_annealing_search
 import load_openml_datasets
+import openml_datasets
 
 import sys
 
-verbose = 2
+from _config import *
 
 if verbose > 0:
     print("Verbose:", verbose, "\n")
@@ -38,7 +39,7 @@ search_list = ["grid_search_cv", "evolutionary_search_no_missing_values",
 #----------
 # list of names of the modules containing methods (in 'methods' directory)
 method_list = ["knn", "decision_tree", "gaussian_nb", "adaboost",
-           "linear_svc", "sgd", "multinomial_nb", "passive_aggressive",
+           "linear_svc", "sgd", "passive_aggressive",
            "random_forest", "bernoulli_nb", "svm_svc", "extra_trees",
            "gradient_boosting", "lda", "qda"]
 
@@ -96,7 +97,13 @@ if verbose > 0:
 
 # datasets = load_openml_datasets.get_10_liked_datasets(dataset_index)
 # TODO - only one dataset for now
-datasets = load_openml_datasets.get_dataset(dataset_index) 
+
+
+# TEMP solution:
+did = openml_datasets.classification[dataset_index-1]
+datasets = load_openml_datasets.get_dataset(did) 
+
+dataset_index = did
 
 #----------
 #  Search algorithms

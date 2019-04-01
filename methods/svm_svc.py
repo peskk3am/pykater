@@ -24,8 +24,8 @@ def get_hyperparameter_search_space():
     # TODO this is totally ad-hoc
     coef0 = FloatHyperparameter("coef0", -1, 1, default=0)
     # probability is no hyperparameter, but an argument to the SVM algo
-    shrinking = CategoricalHyperparameter("shrinking", ["True", "False"],
-                                          default="True")
+    shrinking = CategoricalHyperparameter("shrinking", [True, False],
+                                          default=True)
     tol = FloatHyperparameter("tol", 1e-5, 1e-1, default=1e-4)
     # cache size is not a hyperparameter, but an argument to the program!
     max_iter = Constant("max_iter", -1)

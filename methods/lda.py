@@ -15,7 +15,7 @@ def get_hyperparameter_search_space():
     hs = HyperparameterSpace()
 
     shrinkage = hs.add_hyperparameter(CategoricalHyperparameter(
-        "shrinkage", ["None", "auto", "manual"], default="None"))
+        "shrinkage", [None, "auto", 0.1, 0.5, 0.9], default=None))   # float between 0 and 1: fixed shrinkage parameter.
 #    shrinkage_factor = hs.add_hyperparameter(FloatHyperparameter(
 #        "shrinkage_factor", 0., 1., 0.5))
     n_components = hs.add_hyperparameter(IntegerHyperparameter(
