@@ -14,12 +14,12 @@ def get_hyperparameter_search_space():
 
     hs = HyperparameterSpace()
     
-    loss = CategoricalHyperparameter("loss",
+    loss = CategoricalHyperparameter("passive_aggressive__loss",
                                      ["hinge", "squared_hinge"],
                                      default="hinge")
-    fit_intercept = Constant("fit_intercept", True)
-    max_iter = IntegerHyperparameter("max_iter", 5, 1000, default=20)
-    C = FloatHyperparameter("C", 1e-5, 10, 1)
+    fit_intercept = Constant("passive_aggressive__fit_intercept", True)
+    max_iter = IntegerHyperparameter("passive_aggressive__max_iter", 5, 1000, default=20)
+    C = FloatHyperparameter("passive_aggressive__C", 1e-5, 10, 1)
         
     hs.add_hyperparameter(loss)
     hs.add_hyperparameter(fit_intercept)

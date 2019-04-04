@@ -1,9 +1,9 @@
 from sklearn.metrics import classification_report
 
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import Imputer, normalize
+from sklearn.preprocessing import Imputer
 
-
+from preprocessings import *
 from methods import *
 
 import ea_search, grid_search, randomized_search, simulated_annealing_search
@@ -21,7 +21,7 @@ if verbose > 0:
 #  List of used space search methods
 #----------
 # list of names of the modules containing methods (in 'methods' directory)
-search_list = ["grid_search_cv", "evolutionary_search_no_missing_values",
+search_list = ["grid_search_cv",
                "evolutionary_search", "evolutionary_search_cv",
                "randomized_search_cv", "simulated_annealing_search_cv"]
 
@@ -35,7 +35,7 @@ search_list = ["grid_search_cv", "evolutionary_search_no_missing_values",
         
 
 #----------
-#  List of used data-mining methods
+#  List of available data-mining methods
 #----------
 # list of names of the modules containing methods (in 'methods' directory)
 method_list = ["knn", "decision_tree", "gaussian_nb", "adaboost",
@@ -43,13 +43,21 @@ method_list = ["knn", "decision_tree", "gaussian_nb", "adaboost",
            "random_forest", "bernoulli_nb", "svm_svc", "extra_trees",
            "gradient_boosting", "lda", "qda"]
 
+
+#----------
+#  List of preprocessings
+#----------
+# list of names of the modules containing methods (in 'methods' directory)
+preproc_list = ["pca", "scale", "normalize", "map_to_uniform", "map_to_gaussian"]
+
+
 #----------
 #  Get command line args
 #----------
  
 if sys.argv[1] == "?":
     print()
-    print("Usage: search_parameter_space.py search method dataset")
+    print("Usage: search_parameter_space.py search preprocessings-method-chain dataset")
     print()
     print("Parameter-space search algorithms:")
     i = 0
@@ -65,6 +73,13 @@ if sys.argv[1] == "?":
         print("\t", i, "-", method_list[i])
         i += 1 
     print()
+
+    print("Preprocessings:")
+    i = 0
+    for p in preproc_list: 
+        print("\t", i, "-", preprocessing_list[i])
+        i += 1 
+    print()
     print()
 
     print("Dataset: OpenML dataset ID")
@@ -73,16 +88,26 @@ if sys.argv[1] == "?":
     sys.exit()
 
 search_index = int(sys.argv[1])
-method_index = int(sys.argv[2])    # 0 - 9
+preprocs_method_chain = sys.argv[2]    # 0 - 9
 dataset_index = int(sys.argv[3])
 
+if "-" in preprocs_method_chain:
+    preprocs_method = preprocs_method_chain.split("-")    
+else:  
+    preprocs_method = [preprocs_method_chain]
+    
+method_index = preprocs_method[-1]    
+preprocs_indices = preprocs_method[:-1]  # all but the last
 
-methods = [method_list[method_index]]  # TODO - only one dataset for now
+preprocs = [preproc_list[int(p)] for p in preprocs_indices] 
+method = method_list[int(method_index)]  # TODO - only one dataset for now
+
 search = search_list[search_index]
 
 if verbose > 0:
     print ("Search:", search)
-    print ("Methods:", methods)
+    print ("Methods:", method)    
+    print ("Preprocs:", preprocs)
     
 # Load the iris dataset from scikit-learn
 # from sklearn import datasets
@@ -109,15 +134,25 @@ dataset_index = did
 #  Search algorithms
 #----------
 
-def grid_search_cv(m, dataset_name, verbose=0):
-    tuned_parameters = m.get_hyperparameter_search_space().grid_hyperparameters
+def grid_search_cv(pipeline, chain_names, chain_hyperparameter_space, dataset_name, verbose=0):
+    
+    # add parameters from all chain items
+    # chain_hyperparameter_space is not used for grid search
+    tuned_parameters = {}
+    for name in chain_names:
+        # join all params dictionaries        
+        grid_params = eval(name).get_hyperparameter_search_space().grid_hyperparameters
+        
+        # join two dicts using ** notation 
+        tuned_parameters = {**tuned_parameters, **grid_params}  
+        
     if verbose > 0:
         print("Parameters : values to test")
         for k in tuned_parameters:
-          print("  --", k, ":", tuned_parameters[k])
-        #print(tuned_parameters)                      
-    
-    """ Grid search from scikit-learn:
+          print("  --", k, ":", tuned_parameters[k])                              
+        
+    """ 
+        Grid search from scikit-learn:
     
         GridSearchCV(estimator, param_grid, scoring=None, fit_params=None, 
         n_jobs=1, iid=True, refit=True, cv=None, verbose=0, 
@@ -130,24 +165,16 @@ def grid_search_cv(m, dataset_name, verbose=0):
         enables searching over any sequence of parameter settings.        
     """    
     
-    model = grid_search.GridSearch(m.get_model_class()(), tuned_parameters,
+    model = grid_search.GridSearch(pipeline, chain_names, tuned_parameters,
                                    dataset_name, verbose=0,)
                                           
     return model 
 
-def evolutionary_search_no_missing_values(m, dataset_name, verbose=0):
-    model = Pipeline([("imputer", Imputer(missing_values=0,
-                                          strategy="mean",
-                                          axis=0)),
-                      ('ea', ea_search.EvolutionarySearch(
-                                m.get_model_class()(),
-                                m.get_hyperparameter_search_space(),
-                                dataset_name,
-                                verbose=verbose))])  
-    return model
-
 def evolutionary_search(m, dataset_name, verbose=0):     
-    model = Pipeline([("imputer", Imputer(missing_values=1,
+    print ("evolutionary_search no longer supported. Use evolutionary_search_cv instead.")
+    return
+
+    model = Pipeline([("imputer", Imputer(missing_values=0,
                                           strategy="mean",
                                           axis=0)),
                       ('ea', ea_search.EvolutionarySearch(
@@ -157,38 +184,40 @@ def evolutionary_search(m, dataset_name, verbose=0):
                                 verbose=verbose))])                                     
     return model
                                 
-def evolutionary_search_cv(m, dataset_name, verbose=0):
+def evolutionary_search_cv(pipeline, chain_names, chain_hyperparameter_space, dataset_name, verbose=0):
+       
     model = Pipeline([("imputer", Imputer(missing_values=0,     # TODO jo????
                                           strategy="mean",
                                           axis=0)),
                       ('ea', ea_search.EvolutionarySearchCV(
-                                m.get_model_class()(),
-                                m.get_hyperparameter_search_space(),
+                                pipeline,
+                                chain_names,
+                                chain_hyperparameter_space,
                                 dataset_name,                                
-                                verbose=verbose))])                           
+                                verbose=verbose))])
+                                                           
     return model
     
-def randomized_search_cv(m, dataset_name, verbose=0):
+def randomized_search_cv(pipeline, chain_names, chain_hyperparameter_space, dataset_name, verbose=0):
         
     """ Randomized search from scikit-learn    
     """    
     
-    model = randomized_search.RandomizedSearch(m.get_model_class()(),
-                                   m.get_hyperparameter_search_space(),
-                                   dataset_name, verbose=verbose)
-                                          
+    model = randomized_search.RandomizedSearch(pipeline, chain_names,
+                                   chain_hyperparameter_space,
+                                   dataset_name, verbose=verbose)                                          
     return model 
 
 
-def simulated_annealing_search_cv(m, dataset_name, verbose=0):
+def simulated_annealing_search_cv(pipeline, chain_names, chain_hyperparameter_space, dataset_name, verbose=0):
         
     """ Simulated annealing search    
     """    
     
-    model = simulated_annealing_search.SimulatedAnnealingSearch(m.get_model_class()(),
-                                   m.get_hyperparameter_search_space(),
-                                   dataset_name, verbose=verbose)
-                                          
+    model = simulated_annealing_search.SimulatedAnnealingSearch(pipeline,
+                                   chain_names,
+                                   chain_hyperparameter_space,
+                                   dataset_name, verbose=verbose)                                          
     return model 
 
 
@@ -200,37 +229,66 @@ for X,y, dataset_name in datasets:
 
     #print("X: ", X)
     #print("y: ", y)
-        
-    for m in methods:
-        m = eval(m)
-        print("---")
-        print("Method:", m.get_name())    
-        
-        #----------
-        #  Select the search algorithm
-        #----------
 
-        # construct function name from args
-        # grid_search_cv(...), evolutionary_search(...) ...
-        
-        create_model_function = eval(search)         
-        model = create_model_function(m, str(dataset_name), verbose=verbose)
-                         
-        
-        #----------
-        #  Train the search
-        #----------                 
-        model.fit(X, y)
-        
-                        
-        ##----------
-        ##  Evaluate the best estimator found by the search
-        ##----------
-        # print()
-        # print("Detailed classification report:")        
-        # y_true, y_pred = y_test, model.predict(X_test)
-        #
-        # print(classification_report(y_true, y_pred))
-        print()
-        print()
+    #----------
+    #  Get preprocessing(s) method chain
+    #----------
+                  
+    print("---")    
+    p_names = [eval(p).get_name() for p in preprocs]  # jenom kvuli vypisu   
+    print("Preprocessings:")    
+    [print("---", p) for p in p_names]
+    
+    m = eval(method)
+                
+    print("Method:", m.get_name(), "(", method ,")")    
+    print("---")
+    
+    # create the chain
+    # example: Pipeline(steps=[('pca', pca), ('logistic', logistic)])
+    p_chain = [(p, eval(p).get_model_class()() ) for p in preprocs]
+    m_chain = [(method, m.get_model_class()() )]
+    chain = p_chain + m_chain
+    
+    # print (chain)    
+    
+    pipeline = Pipeline(steps=chain)
+    
+    chain_names = preprocs+[method]
+    
+    # join parameters spaces of all chain items
+    chain_hyperparameter_space = hyperparameters.HyperparameterSpace()
+    for name in chain_names:
+        # join all hyperparams spaces         
+        hs = eval(name).get_hyperparameter_search_space()
+        chain_hyperparameter_space.add_hyperparameter_space(hs)                       
+ 
+    
+    #----------
+    #  Select the search algorithm
+    #----------
+
+    # construct function name from args
+    # grid_search_cv(...), evolutionary_search(...) ...
+    
+    create_model_function = eval(search)         
+    model = create_model_function(pipeline, chain_names, chain_hyperparameter_space, str(dataset_name), verbose=verbose)
+                     
+    
+    #----------
+    #  Train the search
+    #----------                 
+    model.fit(X, y)
+    
+                    
+    ##----------
+    ##  Evaluate the best estimator found by the search
+    ##----------
+    # print()
+    # print("Detailed classification report:")        
+    # y_true, y_pred = y_test, model.predict(X_test)
+    #
+    # print(classification_report(y_true, y_pred))
+    print()
+    print()
         

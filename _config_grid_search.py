@@ -1,1 +1,1 @@
-#----------# Grid Search Parameters#----------grid_n= 20cv_folds = 10# applies for integer and float parameterslogarithmic_scale = False # True/False
+#----------# Grid Search Parameters#----------grid_n = 4cv_folds = 10# applies for integer and float parameterslogarithmic_scale = False # True/False

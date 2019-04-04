@@ -16,19 +16,19 @@ def get_hyperparameter_search_space():
 
     C = FloatHyperparameter("C", 0.03125, 32768, default=1.0)
     # No linear kernel here, because we have liblinear
-    kernel = CategoricalHyperparameter(name="kernel",
+    kernel = CategoricalHyperparameter(name="svm_svc__kernel",
                                        choices=["rbf", "poly", "sigmoid"],
                                        default="rbf")
-    degree = IntegerHyperparameter("degree", 1, 5, default=3)
-    gamma = FloatHyperparameter("gamma", 3.0517578125e-05, 8, default=0.1)
+    degree = IntegerHyperparameter("svm_svc__degree", 1, 5, default=3)
+    gamma = FloatHyperparameter("svm_svc__gamma", 3.0517578125e-05, 8, default=0.1)
     # TODO this is totally ad-hoc
-    coef0 = FloatHyperparameter("coef0", -1, 1, default=0)
+    coef0 = FloatHyperparameter("svm_svc__coef0", -1, 1, default=0)
     # probability is no hyperparameter, but an argument to the SVM algo
-    shrinking = CategoricalHyperparameter("shrinking", [True, False],
+    shrinking = CategoricalHyperparameter("svm_svc__shrinking", [True, False],
                                           default=True)
-    tol = FloatHyperparameter("tol", 1e-5, 1e-1, default=1e-4)
+    tol = FloatHyperparameter("svm_svc__tol", 1e-5, 1e-1, default=1e-4)
     # cache size is not a hyperparameter, but an argument to the program!
-    max_iter = Constant("max_iter", -1)
+    max_iter = Constant("svm_svc__max_iter", -1)
 
     hs.add_hyperparameter(C)
     hs.add_hyperparameter(kernel)

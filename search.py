@@ -1,10 +1,19 @@
 import os
 import sklearn.model_selection as model_selection
 
+from preprocessings import *
+from methods import *
+
 class Search():
+    def get_chain_string(self):
+        chain_list = [eval(e).get_model_class().__name__ for e in self.chain_names]
+        chain = "-".join(chain_list)
+        return chain
+        
     def get_results_file_name(self):
+        
         file_name = "results"+os.sep+type(self).__name__+"_"
-        file_name += type(self.estimator).__name__+"_"+self.dataset_name
+        file_name += self.get_chain_string()+"_"+self.dataset_name
                                         
         extension = "res"
         return file_name, extension
@@ -31,7 +40,7 @@ class Search():
         f.write("# Parameter search: "+type(self).__name__+
                     " ("+self.get_name()+")\n"+ 
                 "# Dataset: "+str(self.dataset_name)+"\n"+
-                "# Estimator: "+type(self.estimator).__name__+"\n")                               
+                "# Estimator: "+self.get_chain_string()+"\n")                               
         try:                                            
             f.write("# Cross Validation: "+str(self.cv)+"\n")            
         except:

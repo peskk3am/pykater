@@ -7,7 +7,19 @@ import math
 
 grid_n = _config_grid_search.grid_n   # number of selected values 
 
+
 class HyperparameterSpace:
+    '''
+        Parameters' names
+        -----------------
+        Scikit learn example:
+        # Parameters of pipelines can be set using ‘__’ separated parameter names:
+        param_grid = {
+          'pca__n_components': [5, 20, 30, 40, 50, 64],
+          'logistic__alpha': np.logspace(-4, 4, 5),
+        }
+        ==> edited param names in config files    
+    '''
 
     def __init__(self):        
         self.grid_hyperparameters = {}
@@ -19,6 +31,10 @@ class HyperparameterSpace:
         enables searching over any sequence of parameter settings.
         '''
         self.hyperparameters = []    
+    
+    def add_hyperparameter_space(self, another_hs):
+        for param in another_hs.hyperparameters:
+            self.add_hyperparameter(param)           
      
     def add_grid_hyperparameter(self, param): 
         global grid_n
