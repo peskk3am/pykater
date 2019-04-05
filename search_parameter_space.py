@@ -135,17 +135,9 @@ dataset_index = did
 #----------
 
 def grid_search_cv(pipeline, chain_names, chain_hyperparameter_space, dataset_name, verbose=0):
+            
+    tuned_parameters = chain_hyperparameter_space.get_grid_parameters()
     
-    # add parameters from all chain items
-    # chain_hyperparameter_space is not used for grid search
-    tuned_parameters = {}
-    for name in chain_names:
-        # join all params dictionaries        
-        grid_params = eval(name).get_hyperparameter_search_space().grid_hyperparameters
-        
-        # join two dicts using ** notation 
-        tuned_parameters = {**tuned_parameters, **grid_params}  
-        
     if verbose > 0:
         print("Parameters : values to test")
         for k in tuned_parameters:
