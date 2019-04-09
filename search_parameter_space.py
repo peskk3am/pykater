@@ -38,7 +38,7 @@ search_list = ["grid_search_cv",
 #  List of available data-mining methods
 #----------
 # list of names of the modules containing methods (in 'methods' directory)
-method_list = ["knn", "decision_tree", "gaussian_nb", "adaboost",
+method_list = ["knn", "decision_tree", "adaboost",
            "linear_svc", "sgd", "passive_aggressive",
            "random_forest", "bernoulli_nb", "svm_svc", "extra_trees",
            "gradient_boosting", "lda", "qda"]
@@ -126,6 +126,7 @@ if verbose > 0:
 
 # TEMP solution:
 did = openml_datasets.classification[dataset_index-1]
+# did = 61
 datasets = load_openml_datasets.get_dataset(did) 
 
 dataset_index = did

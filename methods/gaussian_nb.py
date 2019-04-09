@@ -1,3 +1,4 @@
+# NB is not used - doesn't have any params to tune
 from methods.hyperparameters import *
 from sklearn.naive_bayes import GaussianNB
 

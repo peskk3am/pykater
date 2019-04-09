@@ -128,9 +128,13 @@ class NumericHyperparameter():
                 values += [self.lower + 
                        (self.upper-self.lower)**(1/(self.n-1)*i)]                            
         else:           
-            step = (self.upper-self.lower)/(self.n-1)            
-            for i in range(1, self.n-1):        
-                values += [self.lower + step * i]
+            if self.n == 1:
+                # average value
+                values = [self.upper-self.lower / 2]            
+            else:    
+                step = (self.upper-self.lower)/(self.n-1)            
+                for i in range(1, self.n-1):        
+                    values += [self.lower + step * i]
         values += [self.upper]                        
         
         return values

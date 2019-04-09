@@ -23,7 +23,7 @@ def get_hyperparameter_search_space():
         "sgd__alpha", 10e-7, 1e-1, default=0.0001))
     l1_ratio = hs.add_hyperparameter(FloatHyperparameter(
         "sgd__l1_ratio", 1e-9, 1, default=0.15))
-    fit_intercept = hs.add_hyperparameter(Constant("sgd__fit_intercept", True))
+    # fit_intercept = hs.add_hyperparameter(Constant("sgd__fit_intercept", True))
     
     max_iter = hs.add_hyperparameter(IntegerHyperparameter(
         "sgd__max_iter", 5, 1000, default=20))
@@ -38,16 +38,5 @@ def get_hyperparameter_search_space():
         "sgd__power_t", 1e-5, 1, default=0.25))
     average = hs.add_hyperparameter(CategoricalHyperparameter(
         "sgd__average", [False, True], default=False))
-
-#    # TODO add passive/aggressive here, although not properly documented?
-#    elasticnet = EqualsCondition(l1_ratio, penalty, "elasticnet")
-#    epsilon_condition = EqualsCondition(epsilon, loss, "modified_huber")
-#    # eta0 seems to be always active according to the source code; when
-#    # learning_rate is set to optimial, eta0 is the starting value:
-#    # https://github.com/scikit-learn/scikit-learn/blob/0.15.X/sklearn/linear_model/sgd_fast.pyx
-#    #eta0_and_inv = EqualsCondition(eta0, learning_rate, "invscaling")
-#    #eta0_and_constant = EqualsCondition(eta0, learning_rate, "constant")
-#    #eta0_condition = OrConjunction(eta0_and_inv, eta0_and_constant)
-#    power_t_condition = EqualsCondition(power_t, learning_rate, "invscaling")
 
     return hs
