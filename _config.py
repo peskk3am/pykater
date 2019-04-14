@@ -1,1 +1,1 @@
-'''  General experiment settings'''verbose = 2
+'''  General experiment settings'''verbose = 3
