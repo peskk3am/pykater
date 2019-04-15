@@ -118,6 +118,12 @@ if verbose > 0:
 #----------
 #  Load datasets from OpenML
 #----------
+
+try:
+    load_openml_datasets.init()
+except Exception as e:
+    print(e)
+
 # # datasets = load_openml_datasets.get_datasets(first_n=1) # list of tuples (X,y)
 
 # datasets = load_openml_datasets.get_10_liked_datasets(dataset_index)
