@@ -3,6 +3,7 @@ import openml_api_key
 import openml
 #import pandas as pd
 import  os
+import numpy as np
 
 import _config
 
@@ -54,6 +55,23 @@ def save_dataset_to_file(ID, X, y, attribute_names):
     print("File", ID, "from openML saved to datasets folder.")
     
 
+def _try_to_typecast_to_float(string):
+    res = None
+    try:
+        res = float(string)
+    except:
+        res = string    
+    return res       
+
+def _try_to_typecast_to_int(string):
+    res = None
+    try:
+        res = int(string)
+    except:
+        res = string    
+    return res       
+
+
 def load_dataset_from_file(ID):
     '''
     try to load dataset from a file first,
@@ -62,7 +80,7 @@ def load_dataset_from_file(ID):
     '''
     
     try:
-        f = open(str(ID)+".arff")
+        f = open("datasets"+os.sep+str(ID)+".arff")
     except:
         # read file form online openML repository
         return None
@@ -77,10 +95,13 @@ def load_dataset_from_file(ID):
     read_data = False
     for line in lines:
         if read_data:
-            instance = line.split(",")
-            x = instance[:-1]
-            y.append(instance[-1])
-            X.append(x)
+            line = line.strip()
+            if len(line) > 0 and line[0] != "%":
+                instance = line.split(",")
+            
+                x = [_try_to_typecast_to_float(x) for x in instance[:-1]]                
+                y.append(_try_to_typecast_to_int(instance[-1]))
+                X.append(np.array(x))
     
         if line[:10] == "@ATTRIBUTE":
             attr = line.split(" ")[1]
@@ -89,7 +110,9 @@ def load_dataset_from_file(ID):
                 
         if line[:5] == "@DATA":
             read_data = True
-           
+
+    X = np.array(X)
+    
     return X, y, attr_names
     
                         
@@ -102,7 +125,8 @@ def get_dataset(ID):
     print("Dataset: "+str(ID))
         
     try:
-        X, y, attribute_names = load_dataset_from_file(ID)     
+        X, y, attribute_names = load_dataset_from_file(ID)
+             
     except:
         # read file directly form openML
                          
@@ -110,13 +134,17 @@ def get_dataset(ID):
     
         X, y, attribute_names = dataset.get_data(
                                 target=dataset.default_target_attribute, 
-                                return_attribute_names=True)
+                                return_attribute_names=True)                                
+
+        if _config.cache_opemml_datasets:
+            # save dataset
+            save_dataset_to_file(ID, X, y, attribute_names)
+
+    # print(X)
+    # print(y)
+    
     datasets_list.append((X,y, ID))
         
-    if _config.cache_opemml_datasets:
-        # save dataset
-        save_dataset_to_file(ID, X, y, attribute_names)
-
     
     return datasets_list
 

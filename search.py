@@ -4,7 +4,14 @@ import sklearn.model_selection as model_selection
 from preprocessings import *
 from methods import *
 
+import database
+
 class Search():
+    def __init__(self):
+        experiment_id = database.get_experiment_id()
+        print("experiment_id:", experiment_id)
+        self.experiment_id = experiment_id
+
     def get_chain_string(self):
         chain_list = [eval(e).get_model_class().__name__ for e in self.chain_names]
         chain = "-".join(chain_list)
@@ -12,7 +19,7 @@ class Search():
         
     def get_results_file_name(self):
         
-        file_name = "results"+os.sep+type(self).__name__+"_"
+        file_name = "results3"+os.sep+type(self).__name__+"_"
         file_name += self.get_chain_string()+"_"+self.dataset_name
                                         
         extension = "res"
@@ -35,9 +42,9 @@ class Search():
         
         return f, name
         
-    def write_header(self, f):
-        
-        f.write("# Parameter search: "+type(self).__name__+
+    def write_header(self, f):        
+        f.write("# Experiment id: "+str(self.experiment_id)+"\n"+
+                "# Parameter search: "+type(self).__name__+
                     " ("+self.get_name()+")\n"+ 
                 "# Dataset: "+str(self.dataset_name)+"\n"+
                 "# Estimator: "+self.get_chain_string()+"\n")                               
