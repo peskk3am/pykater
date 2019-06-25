@@ -13,15 +13,31 @@ import openml_datasets
 from numpy import NaN
 
 import sys
+import os
 
 from _config import *
 
 if use_narrowed_intervals:
     from methods_narrowed import *
 
-
 if verbose > 0:
     print("Verbose:", verbose, "\n")
+
+
+# create results, datasets and out folder
+if not os.path.exists(results_dir):
+    os.makedirs(results_dir)
+    
+if not os.path.exists("pre_"+results_dir):
+    os.makedirs("pre_"+results_dir)
+
+if not os.path.exists("datasets"):
+    os.makedirs("datasets")
+    
+if not os.path.exists("out"):
+    os.makedirs("out")
+
+
 
 #----------
 #  List of used space search methods

@@ -6,6 +6,7 @@ verbose = 3
 
 cache_opemml_datasets = True
 
+# directories have to exist
 results_dir = "results"
 
 # if there are narrowed intervals for a method, use them
