@@ -15,7 +15,7 @@ def get_hyperparameter_search_space():
     hs = HyperparameterSpace()
 
     reg_param = FloatHyperparameter('qda__reg_param', 0.0, 10.0,
-                                           default=0.5)
+                                           default=0.0)
     tol = FloatHyperparameter('qda__tol', 0.0, 1.0,
                                            default=1.0e-4)
     

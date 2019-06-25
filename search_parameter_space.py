@@ -10,9 +10,15 @@ import ea_search, grid_search, randomized_search, simulated_annealing_search
 import load_openml_datasets
 import openml_datasets
 
+from numpy import NaN
+
 import sys
 
 from _config import *
+
+if use_narrowed_intervals:
+    from methods_narrowed import *
+
 
 if verbose > 0:
     print("Verbose:", verbose, "\n")
@@ -84,12 +90,18 @@ if sys.argv[1] == "?":
 
     print("Dataset: OpenML dataset ID")
     print("\t(iris id is 61)")     
-    
+
+    print()
+    print()
+    print("For general settings see '_config.py' file")
+
     sys.exit()
 
 search_index = int(sys.argv[1])
 preprocs_method_chain = sys.argv[2]    # 0 - 9
-dataset_index = int(sys.argv[3])
+
+# dataset_index = int(sys.argv[3])
+did = int(sys.argv[3])
 
 if "-" in preprocs_method_chain:
     preprocs_method = preprocs_method_chain.split("-")    
@@ -100,7 +112,7 @@ method_index = preprocs_method[-1]
 preprocs_indices = preprocs_method[:-1]  # all but the last
 
 preprocs = [preproc_list[int(p)] for p in preprocs_indices] 
-method = method_list[int(method_index)]  # TODO - only one dataset for now
+method = method_list[int(method_index)]  # only one dataset (for now)
 
 search = search_list[search_index]
 
@@ -109,33 +121,18 @@ if verbose > 0:
     print ("Methods:", method)    
     print ("Preprocs:", preprocs)
     
-# Load the iris dataset from scikit-learn
-# from sklearn import datasets
-# iris = datasets.load_iris()
-# X, y = iris.data, iris.target
-
 
 #----------
 #  Load datasets from OpenML
 #----------
 
-try:
-    load_openml_datasets.init()
-except Exception as e:
-    print(e)
 
-# # datasets = load_openml_datasets.get_datasets(first_n=1) # list of tuples (X,y)
+# AD HOC solution, use selected methods from "openml_datasets.py":
+# did = openml_datasets.classification[dataset_index-1]
 
-# datasets = load_openml_datasets.get_10_liked_datasets(dataset_index)
-# TODO - only one dataset for now
-
-
-# TEMP solution:
-did = openml_datasets.classification[dataset_index-1]
 # did = 61
 datasets = load_openml_datasets.get_dataset(did) 
 
-dataset_index = did
 
 #----------
 #  Search algorithms
@@ -165,7 +162,7 @@ def grid_search_cv(pipeline, chain_names, chain_hyperparameter_space, dataset_na
     """    
     
     model = grid_search.GridSearch(pipeline, chain_names, tuned_parameters,
-                                   dataset_name, verbose=0,)
+                                   dataset_name, verbose=verbose)
                                           
     return model 
 
@@ -185,15 +182,22 @@ def evolutionary_search(m, dataset_name, verbose=0):
                                 
 def evolutionary_search_cv(pipeline, chain_names, chain_hyperparameter_space, dataset_name, verbose=0):
        
-    model = Pipeline([("imputer", Imputer(missing_values=0,     # TODO jo????
-                                          strategy="mean",
-                                          axis=0)),
-                      ('ea', ea_search.EvolutionarySearchCV(
-                                pipeline,
-                                chain_names,
-                                chain_hyperparameter_space,
-                                dataset_name,                                
-                                verbose=verbose))])
+    #model = Pipeline([("imputer", Imputer(missing_values=0,     # TODO jo????
+    #                                      strategy="mean",
+    #                                      axis=0)),
+    #                  ('ea', ea_search.EvolutionarySearchCV(
+    #                            pipeline,
+    #                            chain_names,
+    #                            chain_hyperparameter_space,
+    #                            dataset_name,                                
+    #                            verbose=verbose))])
+                                
+                                
+    model = ea_search.EvolutionarySearchCV(pipeline,
+                                   chain_names,
+                                   chain_hyperparameter_space,
+                                   dataset_name,
+                                   verbose=verbose)                                
                                                            
     return model
     
@@ -259,7 +263,11 @@ for X,y, dataset_name in datasets:
     chain_hyperparameter_space = hyperparameters.HyperparameterSpace()
     for name in chain_names:
         # join all hyperparams spaces         
-        hs = eval(name).get_hyperparameter_search_space()
+        if name == "knn":
+            hs = eval(name).get_hyperparameter_search_space(len(y))
+        else:
+            hs = eval(name).get_hyperparameter_search_space()
+            
         chain_hyperparameter_space.add_hyperparameter_space(hs)                       
  
     

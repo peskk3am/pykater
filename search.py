@@ -5,6 +5,7 @@ from preprocessings import *
 from methods import *
 
 import database
+import _config
 
 class Search():
     def __init__(self):
@@ -18,9 +19,13 @@ class Search():
         return chain
         
     def get_results_file_name(self):
-        
-        file_name = "results3"+os.sep+type(self).__name__+"_"
-        file_name += self.get_chain_string()+"_"+self.dataset_name
+        chain = self.get_chain_string()        
+        dir_name = _config.results_dir
+        if len(chain.split("-")) > 1:
+            dir_name = "pre_"+dir_name 
+         
+        file_name = dir_name+os.sep+type(self).__name__+"_"
+        file_name += chain+"_"+self.dataset_name
                                         
         extension = "res"
         return file_name, extension

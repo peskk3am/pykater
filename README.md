@@ -4,7 +4,7 @@
 2) Create an environment
   * specify packages you want to install:
         
-```conda create --name pykater python=3 numpy scipy scikit-learn pandas matplotlib```
+```conda create --name pykater python=3 numpy scipy scikit-learn pandas matplotlib mysql-connector-python```
 
 3) Activate the environment
         
